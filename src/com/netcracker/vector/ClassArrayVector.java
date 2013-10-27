@@ -6,8 +6,6 @@ package com.netcracker.vector;
 
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -148,10 +146,10 @@ public class ClassArrayVector implements InterfaceVector, Cloneable  {
       */
     
     @Override
-    public boolean cmp (ClassArrayVector bv) {
-        if(a.length == bv.a.length) {
+    public boolean cmp (InterfaceVector bv) {
+        if(a.length == bv.getSize()) {
             for(int i = 0; i < a.length;i++)
-                if(a[i] != bv.a[i]) {
+                if(a[i] != bv.getElementByIndex(i)) {
                     return false;
                 } 
         }  else { return false;}

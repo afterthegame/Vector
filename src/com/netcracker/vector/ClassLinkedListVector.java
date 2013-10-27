@@ -10,7 +10,7 @@ package com.netcracker.vector;
  */
 public class  ClassLinkedListVector implements InterfaceVector
 {
-    ClassLinkedListVector cllv;
+  //  ClassLinkedListVector cllv;
     /* Объекты этого класса - отдельные элементы списка */ 
     class ListVector
     {
@@ -28,7 +28,7 @@ public class  ClassLinkedListVector implements InterfaceVector
     }
     }
  
-    private int length;    // Размер списка
+    private final int length;    // Размер списка
     public ListVector lvHead; //Ссылка на первый элемент списка
      // временные ссылки, для построения списка
     public ListVector lvTemp;
@@ -113,7 +113,7 @@ public class  ClassLinkedListVector implements InterfaceVector
          }
     
         
-        /**
+     /**
      * Задает все элементы вектора (через другой массив).
      */
         
@@ -128,19 +128,18 @@ public class  ClassLinkedListVector implements InterfaceVector
     /**
      * Задает все элементы вектора (через другой вектор).
      * @param llv
- */    
-    //@Override
-    public void setVectorByObject(ClassLinkedListVector llv) throws ArrayIndexOutOfBoundsException {
+    */    
+    @Override
+    public void setVectorByObject(InterfaceVector llv) throws ArrayIndexOutOfBoundsException {
        int i = 0;
        lvTemp = lvHead;
-       while (i!= getSize()) 
-            lvTemp.value=llv.lvTemp.value;      
+       while (i != getSize()) 
+            lvTemp.value = llv.getElementByIndex(i);
    }; 
     
     /**
      * Возвращает все элементы вектора. Массив не клонируется.
     */
-  //  @Override
     @Override
     public double[] get() {
           return null;
@@ -151,12 +150,14 @@ public class  ClassLinkedListVector implements InterfaceVector
      *  в которой не приводит к изменению элементов данного вектора).
     */ 
     @Override
-     public double[]  duplicate() {
-        //int size = getSize();
-        //double []b = new double [size];
-        //for(int i = 0; i < size;i++)
-        //    b[i] = lvTemp;
-        return null;
+     public InterfaceVector  duplicate(){
+       InterfaceVector blv; 
+       blv = new ClassLinkedListVector();
+       int i = 0;
+       lvTemp = lvHead;
+       while (i != getSize()) 
+            lvTemp.value = blv.getElementByIndex(i);
+        return blv;
     }; 
     
     /**
@@ -179,7 +180,6 @@ public class  ClassLinkedListVector implements InterfaceVector
      * Изменяет элемент по индексу. 
      * @param index В случае выхода индекса за пределы массива:
      *  а) если index<0, ничего не происходит;
-     *  б) если index>=0, размер массива увеличивается так, чтобы index стал последним.
    */
     @Override 
     public  void setElementByIndex(int index, double value) {
@@ -261,7 +261,6 @@ public class  ClassLinkedListVector implements InterfaceVector
     /**
      * Умножает вектор на число
      * @param factor
-     * @return Ссылка на себя (результат сложения)
      */
     
     @Override
@@ -279,11 +278,12 @@ public class  ClassLinkedListVector implements InterfaceVector
      * @param llv
      */
     @Override 
-    public void sum(ClassLinkedListVector llv) {
+    public InterfaceVector sum(InterfaceVector llv ) {
         int i = 0;
         lvTemp = lvHead;
        while (i!=getSize()) 
-            lvTemp.value+=llv.lvTemp.value; 
+            lvTemp.value+=llv.getElementByIndex(i);
+        return llv;
     }; 
     /**
      * Стравнивает два вектора.
@@ -292,13 +292,13 @@ public class  ClassLinkedListVector implements InterfaceVector
      * @return 
      */
     
-   // @Override
-    public boolean cmp (ClassLinkedListVector llv) {
+    @Override
+    public boolean cmp (InterfaceVector llv ) {
         if(getSize() == llv.getSize()) {
         int i = 0;
         lvTemp = lvHead;
        while (i!=getSize()) 
-                if(lvTemp.value != llv.lvTemp.value) {
+                if(lvTemp.value != llv.getElementByIndex(i)) {
                     return false;
                 } 
         }  else { return false;}

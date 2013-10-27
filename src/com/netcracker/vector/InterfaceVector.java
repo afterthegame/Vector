@@ -43,7 +43,6 @@ public interface InterfaceVector {
      * Изменяет элемент по индексу. 
      * @param index В случае выхода индекса за пределы массива:
      *  а) если index<0, ничего не происходит;
-     *  б) если index>=0, размер массива увеличивается так, чтобы index стал последним.
      * @param value
    */
      public  void setElementByIndex(int index, double value);
@@ -96,7 +95,7 @@ public interface InterfaceVector {
      * @param bv Не равен null
      * @return
      */
-    public boolean cmp (ClassArrayVector bv);
+    public boolean cmp (InterfaceVector bv);
 
     @Override
     public String toString ();

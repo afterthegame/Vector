@@ -5,18 +5,26 @@
  */
 package com.netcracker.vector;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  *
  * @author admin
  */
-public class ClassCollectionJArrayListVector implements InterfaceVector {
+public class ClassCollectionJLinkedListVector implements InterfaceVector {
 
-    ArrayList<Double> arrayListCollection;
+    LinkedList<Double> linkedListCollection;
 
-    public ClassCollectionJArrayListVector(int size) {
-        this.arrayListCollection = new ArrayList<>(size);
+    public ClassCollectionJLinkedListVector() {
+        this.linkedListCollection = new LinkedList<>();
+    }
+
+    public void addNodeAfterHead(double value) {
+        linkedListCollection.add(value);
+    }
+
+    public void addNodeAfterIndex(int index, double value) {
+        linkedListCollection.add(index, value);
     }
 
     /**
@@ -24,24 +32,29 @@ public class ClassCollectionJArrayListVector implements InterfaceVector {
      */
     @Override
     public void setVectorByAnother(double[] b) throws ArrayIndexOutOfBoundsException {
-        for (int i = 0; i < arrayListCollection.size(); i++) {
-            arrayListCollection.set(i, b[i]);
+        int i = 0;
+        lvTemp = lvHead;
+        while (i != getSize()) {
+            lvTemp.value = b[i];
         }
     }
 
-    ;
+    ; 
     
     /**
      * Задает все элементы вектора (через другой вектор).
-     */
+     * @param llv
+    */    
     @Override
-    public void setVectorByObject(InterfaceVector bv) throws ArrayIndexOutOfBoundsException {
-        for (int i = 0; i < arrayListCollection.size(); i++) {
-           arrayListCollection.set(i, bv.getElementByIndex(i));
+    public void setVectorByObject(InterfaceVector llv) throws ArrayIndexOutOfBoundsException {
+        int i = 0;
+        lvTemp = lvHead;
+        while (i != getSize()) {
+            lvTemp.value = llv.getElementByIndex(i);
         }
     }
 
-    ;
+    ; 
     
     /**
      * Возвращает все элементы вектора. Массив не клонируется.
@@ -51,40 +64,43 @@ public class ClassCollectionJArrayListVector implements InterfaceVector {
         return null;
     }
 
-    ;  
+    ; 
+    
     /**
      * Возвращает копию вектора (такую, изменение элементов 
      *  в которой не приводит к изменению элементов данного вектора).
-     */
+    */ 
     @Override
     public InterfaceVector duplicate() {
-       
-        return null;
+        InterfaceVector blv;
+        blv = new ClassLinkedListVector();
+        int i = 0;
+        lvTemp = lvHead;
+        while (i != getSize()) {
+            lvTemp.value = blv.getElementByIndex(i);
+        }
+        return blv;
     }
 
-    ;
+    ; 
+    
     /**
      * Возвращает число элементов вектора.
      */
     @Override
     public int getSize() {
-        return arrayListCollection.size();
+       return linkedListCollection.size();
     }
 
     /**
      * Изменяет элемент по индексу.
      *
      * @param index В случае выхода индекса за пределы массива: а) если index<0,
-     * ничего не происходит; б) если index>=0, размер массива увеличивается так,
-     * чтобы index стал последним.
+     * ничего не происходит;
      */
     @Override
     public void setElementByIndex(int index, double value) {
-        if (index >= 0) {
-            if (index < arrayListCollection.size()) {
-                arrayListCollection.set(index, value);
-            }
-        }
+        linkedListCollection.set(index, value);
     }
 
     /**
@@ -95,20 +111,27 @@ public class ClassCollectionJArrayListVector implements InterfaceVector {
      */
     @Override
     public double getElementByIndex(int index) throws ArrayIndexOutOfBoundsException {
-        return arrayListCollection.get(index);
+        return linkedListCollection.get(index);
     }
 
     ;
 
     /**
      * Возвращает максимальный элемент вектора.
-     */
+     * @return 
+    */     
+   
     @Override
     public double getMax() {
-        double max = arrayListCollection.get(0);
-        for (int i = 0; i < arrayListCollection.size(); i++) {
-            if (arrayListCollection.get(i) > max) {
-                max = arrayListCollection.get(i);
+        int i = 0;
+        lvTemp = lvHead;
+        double max = lvTemp.value;
+        while (i != getSize()) {
+            lvTemp = lvTemp.next;
+            i++;
+
+            if (lvTemp.value > max) {
+                max = lvTemp.value;
             }
         }
         return max;
@@ -117,12 +140,23 @@ public class ClassCollectionJArrayListVector implements InterfaceVector {
     /**
      * Возвращает минимальный элемент вектора.
      */
+
+    /**
+     * Возвращает минимальный элемент вектора.
+     *
+     * @return
+     */
     @Override
     public double getMin() {
-        double min = arrayListCollection.get(0);
-        for (int i = 0; i < arrayListCollection.size(); i++) {
-            if (arrayListCollection.get(i) < min) {
-                min = arrayListCollection.get(i);
+        int i = 0;
+        lvTemp = lvHead;
+        double min = lvTemp.value;
+        while (i != getSize()) {
+            lvTemp = lvTemp.next;
+            i++;
+
+            if (min > lvTemp.value) {
+                min = lvTemp.value;
             }
         }
         return min;
@@ -135,37 +169,45 @@ public class ClassCollectionJArrayListVector implements InterfaceVector {
      */
     @Override
     public void mult(double factor) {
-        for (int i = 0; i < arrayListCollection.size(); i++) {
-            arrayListCollection.set(i, getElementByIndex(i) * factor);
+        int i = 0;
+        lvTemp = lvHead;
+        while (i != getSize()) {
+            lvTemp.value *= factor;
         }
     }
 
-    ;
+    ; 
     
      /**
      * Складывает вектор с другим вектором, результат запоминает в элементах данного вектора.
      * Если векторы имеют разный размер, последние элементы большего вектора не учитываются.
-     * @param AnotherArrayListCollection
+     * @param llv
      */
     @Override
-    public InterfaceVector sum(InterfaceVector AnotherArrayListCollection) {
-        for (int i = 0; i < arrayListCollection.size(); i++) {
-            arrayListCollection.set(i, getElementByIndex(i) + AnotherArrayListCollection.getElementByIndex(i));
+    public InterfaceVector sum(InterfaceVector llv) {
+        int i = 0;
+        lvTemp = lvHead;
+        while (i != getSize()) {
+            lvTemp.value += llv.getElementByIndex(i);
         }
-        return AnotherArrayListCollection;
+        return llv;
     }
 
-    ;
+    ; 
     /**
      * Стравнивает два вектора.
      * Если вектора равны возвращает true, иначе false 
-      */
+     * @param llv
+     * @return 
+     */
     
     @Override
-    public boolean cmp(InterfaceVector bv) {
-        if (arrayListCollection.size() == bv.getSize()) {
-            for (int i = 0; i < arrayListCollection.size(); i++) {
-                if (arrayListCollection.get(i) != bv.getElementByIndex(i)) {
+    public boolean cmp(InterfaceVector llv) {
+        if (getSize() == llv.getSize()) {
+            int i = 0;
+            lvTemp = lvHead;
+            while (i != getSize()) {
+                if (lvTemp.value != llv.getElementByIndex(i)) {
                     return false;
                 }
             }
